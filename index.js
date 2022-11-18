@@ -5,13 +5,23 @@ const fs = require('fs');
 http.createServer(function (req, res) {
     const fullServerUrl = url.parse(req.url, true);
     const filename = "."+ fullServerUrl.pathname;
-    fs.readFile(filename, function(err, data) {
-        if(err) {
+
+    if (filename == './index.html' ||
+        filename == './contact-me.html' ||
+        filename == './about.html'
+    ) {
+        fs.readFile(filename, function(err, data) {
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            console.log(filename);
+            return res.end();
+        });
+    } else {
+        fs.readFile('404.html', function(err, data) {
             res.writeHead(404, {'Content-Type': 'text/html'});
-            return res.end("404 Not Found");
-        }  
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
-        return res.end();
-    });
+            res.write(data);
+            console.log(filename);
+            return res.end();
+        });
+    }
 }).listen(8080); 
